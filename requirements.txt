@@ -1,4 +1,5 @@
 ai-edge-litert>=2.1.6
 numpy>=2.0
 pillow>=11.0
+streamlit>=1.49
 flask>=3.0

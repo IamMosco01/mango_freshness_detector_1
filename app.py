@@ -35,9 +35,12 @@ def index():
     raw = upload.read()
     try:
         result = predict(io.BytesIO(raw))
-    except Exception as exc:
-        return render_template('index.html', threshold=DEFAULT_THRESHOLD,
-                               error=f'Could not read that image: {exc}')
+    except Exception:
+        # Pillow's own message embeds the whole file object, which is noise here.
+        return render_template(
+            'index.html', threshold=DEFAULT_THRESHOLD,
+            error=f'Could not read {upload.filename} — it may be corrupt '
+                  'or not a real image.')
 
     # Echo the uploaded image back inline so the user sees what was scored.
     preview = (f'data:{upload.mimetype};base64,'

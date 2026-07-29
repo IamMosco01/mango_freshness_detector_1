@@ -12,19 +12,43 @@ Needs Python 3.10–3.14.
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+.venv/bin/pip install --only-binary :all: -r requirements.txt
 ```
 
-## Run the web app
+`--only-binary :all:` matters on Python 3.13+: without it pip backtracks into
+source builds of numpy/pyarrow and fails.
+
+## Run the web app (Streamlit)
+
+```bash
+.venv/bin/streamlit run streamlit_app.py
+```
+
+Opens on <http://localhost:8501>. Upload a mango photo and it shows the verdict,
+a confidence score, and a threshold slider in the sidebar.
+
+## Deploy to Streamlit Community Cloud
+
+1. Push this repo to GitHub (the `.tflite` model is committed, so nothing else
+   needs uploading).
+2. Go to <https://share.streamlit.io> and sign in with GitHub.
+3. **Create app** → **Deploy a public app from GitHub**, then set:
+   - Repository: `IamMosco01/mango_freshness_detector_1`
+   - Branch: `main`
+   - Main file path: `streamlit_app.py`
+4. Under **Advanced settings**, pick Python **3.12** or **3.13**.
+5. Click **Deploy**. First build takes a few minutes while dependencies install.
+
+The app is CPU-only and the model is 11 MB, so it fits comfortably in the free
+tier's 1 GB of RAM.
+
+## Alternative: the Flask app
 
 ```bash
 .venv/bin/python app.py
 ```
 
-Then open <http://127.0.0.1:5000>, upload a mango photo, and it reports the verdict
-with a confidence score.
-
-There is also a JSON endpoint:
+Serves the same model at <http://127.0.0.1:5000> with a JSON endpoint:
 
 ```bash
 curl -F "image=@mango.jpg" http://127.0.0.1:5000/api/predict
@@ -50,6 +74,7 @@ curl -F "image=@mango.jpg" http://127.0.0.1:5000/api/predict
 
 | Path | What it is |
 | --- | --- |
+| [streamlit_app.py](streamlit_app.py) | Streamlit web app — the deployed front-end |
 | [app.py](app.py) | Flask web app (upload form + `/api/predict`) |
 | [predict.py](predict.py) | Command-line classifier |
 | [mango.py](mango.py) | Model loading and preprocessing, shared by both |
