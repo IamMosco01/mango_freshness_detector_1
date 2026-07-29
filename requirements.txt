@@ -1,0 +1,4 @@
+ai-edge-litert>=2.1.6
+numpy>=2.0
+pillow>=11.0
+flask>=3.0
