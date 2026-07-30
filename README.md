@@ -81,3 +81,8 @@ curl -F "image=@mango.jpg" http://127.0.0.1:5000/api/predict
 | [mango_classifier.tflite](mango_classifier.tflite) | Quantised model used at runtime (10.6 MB) |
 | [results/Mango_model/](results/Mango_model/) | Original `.keras` model, training curves, confusion matrix |
 | [FreshvsRottenMango.ipynb](FreshvsRottenMango.ipynb) | Training notebook (Colab) |
+
+
+#CONTRIBUTOR
+#THOMPSON ANIEDI MOSES
+#22/EG/CO/1663
