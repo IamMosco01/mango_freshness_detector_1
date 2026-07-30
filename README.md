@@ -88,5 +88,5 @@ curl -F "image=@mango.jpg" http://127.0.0.1:5000/api/predict
 ## 22/EG/CO/1663
 
 ## CONTRIBUTOR
-## your name
-## your reg no.
+## AZU JACOB OBIAJURU 
+## 22/EG/CO/1693
