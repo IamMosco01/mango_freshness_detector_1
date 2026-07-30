@@ -1,7 +1,9 @@
 # mango_freshness_detector_1
 A web app to check the freshness of mango fruits.....
 # 🥭 Fresh vs Rotten Mango Classifier
-
+## CONTRIBUTOR
+## David,Obongofiok Anietie 
+## 22/EG/CO/1753
 A binary image classification model that distinguishes between fresh and rotten mangoes, built with a CNN in TensorFlow/Keras, converted to TensorFlow Lite for lightweight deployment, and served through a Streamlit web app.
 
 ## Overview
