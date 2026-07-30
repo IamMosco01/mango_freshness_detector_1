@@ -86,3 +86,7 @@ curl -F "image=@mango.jpg" http://127.0.0.1:5000/api/predict
 ##CONTRIBUTOR
 ##THOMPSON ANIEDI MOSES
 ##22/EG/CO/1663
+
+## CONTRIBUTOR
+## THOMPSON ANIEDI MOSES
+## 22/EG/CO/1663
