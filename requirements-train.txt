@@ -1,0 +1,8 @@
+# Training and export only -- the deployed app does not need these.
+# Install the CPU build to avoid pulling the ~3GB CUDA stack:
+#   pip install --index-url https://download.pytorch.org/whl/cpu -r requirements-train.txt
+-r requirements.txt
+torch>=2.5
+torchvision>=0.20
+onnx>=1.16
+onnxscript>=0.1
