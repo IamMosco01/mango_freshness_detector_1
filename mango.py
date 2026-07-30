@@ -13,8 +13,8 @@ MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 CLASS_NAMES = ['fresh', 'rotten']
 IMG_SIZE = (224, 224)
 
-# The notebook settled on 0.5 as the best operating point for the TFLite model.
-DEFAULT_THRESHOLD = 0.5
+# The notebook settled on 0.6 as the best operating point for the TFLite model.
+DEFAULT_THRESHOLD = 0.6
 
 _interpreter = None
 
