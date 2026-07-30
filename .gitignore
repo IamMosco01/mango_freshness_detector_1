@@ -1,3 +1,7 @@
 .venv/
 __pycache__/
 *.pyc
+
+# Training data and artifacts (not committed)
+data/
+runs/
