@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Classify mango images from the command line.
 
-    python predict.py photo.jpg [more.jpg ...] [--threshold 0.6]
+    python predict.py photo.jpg [more.jpg ...] [--threshold 0.5]
 """
 
 import argparse
