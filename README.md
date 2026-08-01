@@ -140,4 +140,14 @@ towards blemish texture.
 | [evaluate.py](evaluate.py) | Test-split metrics, threshold sweep, old-vs-new comparison |
 | [export_onnx.py](export_onnx.py) | Checkpoint → ONNX, with a parity check |
 | [mango_classifier.tflite](mango_classifier.tflite) | Superseded model, kept for reference (10.6 MB) |
+| [results/Mango_model/](results/Mango_model/) | Original `.keras` model, training curves, confusion matrix |
 | [FreshvsRottenMango.ipynb](FreshvsRottenMango.ipynb) | Original training notebook (Colab) |
+
+
+## CONTRIBUTOR
+## THOMPSON ANIEDI MOSES
+## 22/EG/CO/1663
+
+## CONTRIBUTOR
+## AZU JACOB OBIAJURU 
+## 22/EG/CO/1693
