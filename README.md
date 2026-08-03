@@ -1,123 +1,181 @@
 # mango_freshness_detector_1
-A web app to check the freshness of mango fruits.....
-# 🥭 Fresh vs Rotten Mango Classifier
-## CONTRIBUTOR
-## David,Obongofiok Anietie 
-## 22/EG/CO/1753
-A binary image classification model that distinguishes between fresh and rotten mangoes, built with a CNN in TensorFlow/Keras, converted to TensorFlow Lite for lightweight deployment, and served through a Streamlit web app.
 
-## Overview
+A web app to check the freshness of mango fruits.
 
-This project trains a convolutional neural network to classify mango images as either **fresh** or **rotten**, using a subset of the [Fruits and Vegetables Dataset](https://www.kaggle.com/datasets/muhriddinmuxiddinov/fruits-and-vegetables-dataset) from Kaggle. The final model is optimized for size (TensorFlow Lite, ~10.6MB) and deployed as an interactive web app.
+A MobileNetV3 classifier, fine-tuned on 2352 mango photos, labels an image as
+**fresh** or **rotten**. Inference runs locally on the CPU via ONNX Runtime — no
+GPU, no TensorFlow, no PyTorch needed to serve it.
 
-## Live Demo
+**99.7% accuracy** (ROC AUC 0.9999) on a held-out, deduplicated test split of 354
+images.
 
-🔗 **[Try the app](https://mangofreshdetector1-co7.streamlit.app)**
+## Setup
 
-## Files in this repo
+Needs Python 3.10–3.14.
 
-| File / Folder | Description |
-|---|---|
-| `FreshvsRottenMango.ipynb` | Full notebook: data loading, preprocessing, model training, evaluation |
-| `mango_classifier.tflite` | Final trained model, TensorFlow Lite format (~10.6MB) |
-| `mango.py` | Shared inference helpers (preprocessing, prediction logic) used by the app |
-| `streamlit_app.py` | Streamlit front-end for the deployed web app |
-| `results/` | Training curves, confusion matrix, and sample image visualizations |
-
-## Dataset
-
-- **Source**: Kaggle — `muhriddinmuxiddinov/fruits-and-vegetables-dataset`
-- **Classes used**: `FreshMango` (605 images), `RottenMango` (593 images)
-- **Total images**: 1,198
-- **Split**: 70% train / 15% validation / 15% test
-- **Access method**: Downloaded via `kagglehub` in Google Colab
-
-### Data Preparation
-- Images merged from separate `FreshMango`/`RottenMango` folders into a unified `fresh`/`rotten` directory structure
-- Manual visual inspection performed to check for mislabeled or irrelevant images
-- Class balance confirmed (605 vs 593 — no significant imbalance)
-
-## Model Details
-
-- **Architecture**: Custom CNN — 3 convolutional blocks (32 → 64 → 128 filters) with max pooling, followed by dense layers and dropout
-- **Input shape**: 224 × 224 × 3 (RGB)
-- **Preprocessing**: `Rescaling(1./255)` is built into the model itself — feed in raw 0–255 pixel images, no manual normalization needed
-- **Data augmentation**: Random horizontal flip, rotation (±20%), zoom (±10%) — applied only during training
-- **Output**: Single sigmoid value — probability of "rotten"
-- **Classification threshold**: **0.6** (not the default 0.5) — tuned to improve fresh mango recall
-- **Class order**: `['fresh', 'rotten']` (index 0 = fresh, index 1 = rotten)
-
-## Results & Iteration
-
-### Initial Baseline
-| Metric | Value |
-|---|---|
-| Test Accuracy | 88.35% |
-| Fresh recall | 0.79 |
-| Rotten recall | 0.96 |
-
-### After Tuning (threshold 0.5 → 0.6, zoom 0.2 → 0.1)
-| Metric | Value |
-|---|---|
-| Test Accuracy | 93% |
-| Fresh recall | 0.88 |
-| Rotten recall | 0.98 |
-
-### Architecture Size Experiment
-A smaller architecture (fewer filters, GlobalAveragePooling, smaller dense layer) was tested to reduce file size. This caused significant performance degradation (~62% accuracy) and was not adopted.
-
-### Final Optimization: TensorFlow Lite Conversion
-The original (best-performing) model was converted to TensorFlow Lite with default quantization instead of shrinking the architecture:
-
-| Metric | Original (.keras) | TFLite (quantized) |
-|---|---|---|
-| File size | 134 MB | 10.6 MB |
-| Test Accuracy | 93% | ~97.6% |
-
-A ~92% file size reduction with no accuracy tradeoff — accuracy slightly improved, likely due to quantization's mild regularizing effect.
-
-See `results/` for the full confusion matrix and training curves.
-
-## Using the model directly
-
-```python
-import tensorflow as tf
-import numpy as np
-from PIL import Image
-
-interpreter = tf.lite.Interpreter(model_path="mango_classifier.tflite")
-interpreter.allocate_tensors()
-
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
-
-img = Image.open("your_image.jpg").convert('RGB').resize((224, 224))
-img_batch = np.expand_dims(np.asarray(img, dtype=np.float32), axis=0)
-
-interpreter.set_tensor(input_details[0]['index'], img_batch)
-interpreter.invoke()
-prediction = interpreter.get_tensor(output_details[0]['index'])
-
-label = "rotten" if prediction[0][0] > 0.6 else "fresh"
-print(label)
+```bash
+python3 -m venv .venv
+.venv/bin/pip install --only-binary :all: -r requirements.txt
 ```
 
+`--only-binary :all:` matters on Python 3.13+: without it pip backtracks into
+source builds of numpy/pyarrow and fails.
+
+## Run the web app (Streamlit)
+
+```bash
+.venv/bin/streamlit run streamlit_app.py
+```
+
+Opens on <http://localhost:8501>. Upload a mango photo and it shows the verdict,
+a confidence score, and a threshold slider in the sidebar.
+
+## Deploy to Streamlit Community Cloud
+
+1. Push this repo to GitHub (`mango_classifier.onnx` is committed, so nothing else
+   needs uploading).
+2. Go to <https://share.streamlit.io> and sign in with GitHub.
+3. **Create app** → **Deploy a public app from GitHub**, then set:
+   - Repository: `IamMosco01/mango_freshness_detector_1`
+   - Branch: `main`
+   - Main file path: `streamlit_app.py`
+4. Under **Advanced settings**, pick Python **3.12** or **3.13**.
+5. Click **Deploy**. First build takes a few minutes while dependencies install.
+
+The app is CPU-only and the model is 6 MB, so it fits comfortably in the free
+tier's 1 GB of RAM. `requirements.txt` deliberately excludes PyTorch — it is only
+needed to train, and its PyPI wheel would pull the CUDA stack for nothing.
+
+## Alternative: the Flask app
+
+```bash
+.venv/bin/python app.py
+```
+
+Serves the same model at <http://127.0.0.1:5000> with a JSON endpoint:
+
+```bash
+curl -F "image=@mango.jpg" http://127.0.0.1:5000/api/predict
+# {"label":"fresh","confidence":0.78,"rotten_probability":0.2166,"threshold":0.5}
+```
+
+## Run from the command line
+
+```bash
+.venv/bin/python predict.py mango.jpg another.jpg
+.venv/bin/python predict.py mango.jpg --threshold 0.35
+```
+
+## How it works
+
+- Input: RGB image resized to 224×224 with **bilinear** interpolation, then
+  normalised with ImageNet mean/std. The filter matters — serving with bicubic
+  while training used bilinear shifts scores near the decision boundary.
+- Backbone: **MobileNetV3-Small**, ImageNet-pretrained, fine-tuned end to end.
+- Output: one sigmoid value = probability the mango is **rotten**
+  (classes are alphabetical, so `fresh` = 0, `rotten` = 1).
+- Decision threshold defaults to **0.5**. Balanced accuracy is flat from 0.35 to
+  0.50 on the test split, and 0.5 leaves the most headroom above the hardest real
+  fresh mango on hand (a ripe yellow one on white, which scores 0.22).
+
+## Retraining
+
+```bash
+# 1. Get the data (no Kaggle account needed - the dataset is public CC0)
+curl -L -o mango.zip \
+  https://www.kaggle.com/api/v1/datasets/download/adrinbd/unripe-ripe-rotten-mango
+unzip -q mango.zip -d /tmp/mango && mkdir -p data/raw && cp -r /tmp/mango/dataset/* data/raw/
+
+# 2. Deduplicate and build a leakage-free split
+.venv/bin/python data_prep.py
+
+# 3. Train (CPU: ~1 minute per epoch on 8 cores)
+.venv/bin/pip install --index-url https://download.pytorch.org/whl/cpu -r requirements-train.txt
+.venv/bin/python train.py --epochs 15
+
+# 4. Score against the old model, and export for serving
+.venv/bin/python evaluate.py
+.venv/bin/python export_onnx.py
+```
+
+`data_prep.py` is not optional. The raw download ships a train/validation split in
+which **26% of the validation images are byte-identical copies of training images**,
+so validating against it measures memorisation. The script dedupes by content hash,
+re-splits 70/15/15 stratified on the original three-way label, and asserts no image
+crosses splits.
+
+### Why the model was replaced
+
+The original CNN (see [FreshvsRottenMango.ipynb](FreshvsRottenMango.ipynb)) reported
+93% in the notebook but scored **79.9%** on held-out data, and misread ripe yellow
+mangoes as rotten. Ablations showed why: desaturating a rotten mango collapsed its
+score from ~0.89 to ~0.23, so it was reading **hue, not decay** — it retained only
+26% of its signal without colour, and confidently classified plain colour swatches
+containing no mango at all.
+
+The current model retains **99%** of its score under the same grayscale ablation,
+which is why the training pipeline uses aggressive `ColorJitter` and
+`RandomGrayscale`: they make colour an unreliable shortcut and push the network
+towards blemish texture.
+
+| | old CNN | new MobileNetV3 |
+| --- | --- | --- |
+| Test accuracy (354 held-out images) | 79.9% | **99.7%** |
+| ROC AUC | 0.8809 | **0.9999** |
+| Ripe mangoes wrongly called rotten | 28.2% | **0.0%** |
+| Signal retained without colour | 26.1% | **99.1%** |
+| External photos correct (Wikimedia) | 4/7 | **7/7** |
+
+## Files
+
+| Path | What it is |
+| --- | --- |
+| [streamlit_app.py](streamlit_app.py) | Streamlit web app — the deployed front-end |
+| [app.py](app.py) | Flask web app (upload form + `/api/predict`) |
+| [predict.py](predict.py) | Command-line classifier |
+| [mango.py](mango.py) | Model loading and preprocessing, shared by all three |
+| [mango_classifier.onnx](mango_classifier.onnx) | Model used at runtime (6.1 MB) |
+| [data_prep.py](data_prep.py) | Dedupe + leakage-free split |
+| [train.py](train.py) | Fine-tuning script |
+| [evaluate.py](evaluate.py) | Test-split metrics, threshold sweep, old-vs-new comparison |
+| [export_onnx.py](export_onnx.py) | Checkpoint → ONNX, with a parity check |
+| [mango_classifier.tflite](mango_classifier.tflite) | Superseded model, kept for reference (10.6 MB) |
+| [results/Mango_model/](results/Mango_model/) | Original `.keras` model, training curves, confusion matrix |
+| [FreshvsRottenMango.ipynb](FreshvsRottenMango.ipynb) | Original training notebook (Colab) |
+
+
 ## CONTRIBUTOR
-## ogboeto Alswell Godspower 
+## THOMPSON ANIEDI MOSES
+## 22/EG/CO/1663
+
+## CONTRIBUTOR
+## AZU JACOB OBIAJURU 
+## 22/EG/CO/1693
+
+## CONTRIBUTOR
+## UMOH UBONGABASI NYENEIME
+## 22/EG/CO/1713
+
+## CONTRIBUTOR
+## David,Obongofiok Anietie
+## 22/EG/CO/1753
+
+## CONTRIBUTOR
+## ogboeto Alswell Godspower
 ## 22/EG/CO/1633
 
 ## CONTRIBUTOR
-## Asubop, Daniel Theodore 
+## Asubop, Daniel Theodore
 ## 22/EG/CO/1703
 
 ## CONTRIBUTOR
-## ISOBARA, EKEREOBONG EPHRAIM 
+## ISOBARA, EKEREOBONG EPHRAIM
 ## 22/EG/CO/1803
 
 ## CONTRIBUTOR
-## Bassey, Gloriouslife Akaninyene 
+## Bassey, Gloriouslife Akaninyene
 ## 22/EG/CO/1763
 
 ## CONTRIBUTOR
-## John, Saloma Joseph 
+## John, Saloma Joseph
 ## 22/EG/CO/1723

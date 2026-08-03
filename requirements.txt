@@ -1,0 +1,6 @@
+# Serving only. Training additionally needs torch/torchvision -- see requirements-train.txt.
+onnxruntime>=1.17
+numpy>=2.0
+pillow>=11.0
+streamlit>=1.49
+flask>=3.0
