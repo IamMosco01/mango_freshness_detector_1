@@ -143,39 +143,48 @@ towards blemish texture.
 | [results/Mango_model/](results/Mango_model/) | Original `.keras` model, training curves, confusion matrix |
 | [FreshvsRottenMango.ipynb](FreshvsRottenMango.ipynb) | Original training notebook (Colab) |
 
+## Collaborators
 
-## CONTRIBUTOR
-## THOMPSON ANIEDI MOSES
-## 22/EG/CO/1663
+### 1) Thompson Aniedi Moses *(Leader)*
+- **Matric No.:** 22/EG/CO/1663
+- **GitHub:** [IamMosco01](https://github.com/IamMosco01)
 
-## CONTRIBUTOR
-## AZU JACOB OBIAJURU 
-## 22/EG/CO/1693
+### 2) Azu Jacob Obiajuru
+- **Matric No.:** 22/EG/CO/1693
+- **GitHub:** [Thenameis-Obiajuru](https://github.com/Thenameis-Obiajuru)
 
-## CONTRIBUTOR
-## UMOH UBONGABASI NYENEIME
-## 22/EG/CO/1713
+### 3) David Obongofiok Anietie
+- **Matric No.:** 22/EG/CO/1753
+- **GitHub:** [Obongofiok1753](https://github.com/Obongofiok1753)
 
-## CONTRIBUTOR
-## David,Obongofiok Anietie
-## 22/EG/CO/1753
+### 4) Ogboeto Alswell Godspower
+- **Matric No.:** 22/EG/CO/1633
+- **GitHub:** [Njuboy1](https://github.com/Njuboy1)
 
-## CONTRIBUTOR
-## ogboeto Alswell Godspower
-## 22/EG/CO/1633
+### 5) Ekereobong Ephraim Isobara
+- **Matric No.:** 22/EG/CO/1803
+- **GitHub:** [ekereobrown](https://github.com/ekereobrown)
 
-## CONTRIBUTOR
-## Asubop, Daniel Theodore
-## 22/EG/CO/1703
+### 6) Gloriouslife Akaninyene Bassey
+- **Matric No.:** 22/EG/CO/1763
+- **GitHub:** [Glorious81](https://github.com/Glorious81)
 
-## CONTRIBUTOR
-## ISOBARA, EKEREOBONG EPHRAIM
-## 22/EG/CO/1803
+### 7) Udoh Tom Daniel
+- **Matric No.:** 22/EG/CO/1733
+- **GitHub:** [tomdan-ai](https://github.com/tomdan-ai)
 
-## CONTRIBUTOR
-## Bassey, Gloriouslife Akaninyene
-## 22/EG/CO/1763
+### 8) Abasifreke Emmanuel Jeremiah
+- **Matric No.:** 23/EG/CO/043
+- **GitHub:** [fabbz699](https://github.com/fabbz699)
 
-## CONTRIBUTOR
-## John, Saloma Joseph
-## 22/EG/CO/1723
+### 9) Umoh Ubongabasi N.
+- **Matric No.:** 22/EG/CO/1713
+- **GitHub:** [ubongabasiumoh266](https://github.com/ubongabasiumoh266)
+
+### 10) Daniel Theodore Asubop
+- **Matric No.:** 22/EG/CO/1703
+- **GitHub:** [anonymous-theo](https://github.com/anonymous-theo)
+
+### 11) Saloma Joseph John
+- **Matric No.:** 22/EG/CO/1723
+- **GitHub:** [Saloma580](https://github.com/Saloma580)
